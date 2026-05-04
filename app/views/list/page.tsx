@@ -1,11 +1,9 @@
 import { Header } from "@/components/header";
 import { ListView } from "./list-view";
-import { getPosts } from "@/lib/notion";
+import { getPosts } from "@/lib/posts";
 
-export const dynamic = "force-dynamic";
-
-export default async function ListPage() {
-  const { posts } = await getPosts();
+export default function ListPage() {
+  const posts = getPosts();
   return (
     <div className="min-h-screen bg-[#F4F1EA]">
       <Header active="list" />

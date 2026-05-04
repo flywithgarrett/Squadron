@@ -1,11 +1,9 @@
 import { Header } from "@/components/header";
 import { PillarsView } from "./pillars-view";
-import { getPosts } from "@/lib/notion";
+import { getPosts } from "@/lib/posts";
 
-export const dynamic = "force-dynamic";
-
-export default async function PillarsPage() {
-  const { posts } = await getPosts();
+export default function PillarsPage() {
+  const posts = getPosts();
   return (
     <div className="min-h-screen bg-[#F4F1EA]">
       <Header active="pillars" />

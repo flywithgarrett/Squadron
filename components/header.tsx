@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SyncButton } from "@/components/sync-button";
 import { LogoutButton } from "@/components/logout-button";
 
 export function Header({
@@ -45,7 +44,6 @@ export function Header({
         </nav>
 
         <div className="flex items-center gap-3">
-          <SyncButton />
           <LogoutButton />
         </div>
       </div>

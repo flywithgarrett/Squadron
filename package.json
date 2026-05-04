@@ -6,11 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "import": "tsx scripts/import-to-notion.ts"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.15",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.460.0",
@@ -25,7 +23,6 @@
     "@types/react-dom": "^19.0.0",
     "@tailwindcss/postcss": "^4.0.0",
     "tailwindcss": "^4.0.0",
-    "tsx": "^4.19.2",
     "typescript": "^5.7.0"
   },
   "packageManager": "pnpm@10.0.0"

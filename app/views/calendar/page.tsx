@@ -1,11 +1,9 @@
 import { Header } from "@/components/header";
 import { CalendarView } from "./calendar-view";
-import { getPosts } from "@/lib/notion";
+import { getPosts } from "@/lib/posts";
 
-export const dynamic = "force-dynamic";
-
-export default async function CalendarPage() {
-  const { posts, source } = await getPosts();
+export default function CalendarPage() {
+  const posts = getPosts();
   return (
     <div className="min-h-screen bg-[#F4F1EA]">
       <Header active="calendar" />
@@ -18,11 +16,6 @@ export default async function CalendarPage() {
             The Squadron content schedule — May through August 2026. Click any
             post chip to read its brief.
           </p>
-          {source === "seed" && (
-            <p className="mt-3 text-[11px] uppercase tracking-[0.12em] text-[#A14829]">
-              Showing seed data — connect Notion to enable live sync.
-            </p>
-          )}
         </div>
         <CalendarView posts={posts} />
       </main>
