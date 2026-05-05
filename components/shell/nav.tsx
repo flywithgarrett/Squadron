@@ -14,7 +14,7 @@ export function MobileTabBar() {
   return (
     <nav
       aria-label="Views"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[#F4F1EA]/95 backdrop-blur supports-[backdrop-filter]:bg-[#F4F1EA]/80 border-t border-[color:var(--color-hairline)]"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[color:var(--color-canvas)]/90 supports-[backdrop-filter]:backdrop-blur-xl supports-[backdrop-filter]:bg-[color:var(--color-canvas)]/72 border-t border-[color:var(--color-rule)]"
     >
       <div className="max-w-[480px] mx-auto grid grid-cols-3">
         {ITEMS.map(({ href, label }) => {
@@ -24,19 +24,20 @@ export function MobileTabBar() {
               key={href}
               href={href}
               className={
-                "relative flex items-center justify-center py-3 text-[12px] font-medium tracking-[0.02em] " +
+                "relative flex items-center justify-center py-4 text-[12px] font-medium tracking-[-0.005em] " +
                 (active
-                  ? "text-[#0A2540]"
-                  : "text-[color:var(--color-navy-mute)]")
+                  ? "text-[color:var(--color-ink)]"
+                  : "text-[color:var(--color-ink-45)]")
               }
             >
               {label}
-              {active && (
-                <span
-                  aria-hidden
-                  className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-8 bg-[#C8A24B]"
-                />
-              )}
+              <span
+                aria-hidden
+                className={
+                  "absolute top-0 left-1/2 -translate-x-1/2 h-px w-7 bg-[color:var(--color-gold)] transition-opacity duration-200 " +
+                  (active ? "opacity-100" : "opacity-0")
+                }
+              />
             </Link>
           );
         })}

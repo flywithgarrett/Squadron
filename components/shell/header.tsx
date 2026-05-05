@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { SyncButton } from "@/components/shell/sync-button";
 import { LogoutLink } from "@/components/shell/logout-link";
+import { SquadronLogo } from "@/components/icons/squadron-logo";
 
 type Active = "calendar" | "list" | "types";
 
@@ -10,43 +10,51 @@ export function Header({ active }: { active: Active }) {
       key={key}
       href={href}
       className={
-        "relative inline-block text-[13px] font-medium px-1 py-1 " +
+        "relative inline-flex items-center text-[13px] font-medium tracking-[-0.005em] " +
         (active === key
-          ? "text-[#0A2540]"
-          : "text-[color:var(--color-navy-mute)] hover:text-[#0A2540]")
+          ? "text-[color:var(--color-ink)]"
+          : "text-[color:var(--color-ink-60)] hover:text-[color:var(--color-ink)]")
       }
     >
       {label}
-      {active === key && (
-        <span
-          aria-hidden
-          className="absolute -bottom-[7px] left-0 right-0 h-px bg-[#C8A24B]"
-        />
-      )}
+      <span
+        aria-hidden
+        className={
+          "absolute -bottom-2 left-0 right-0 h-px transition-opacity duration-200 " +
+          (active === key
+            ? "bg-[color:var(--color-gold)] opacity-100"
+            : "bg-[color:var(--color-gold)] opacity-0")
+        }
+      />
     </Link>
   );
 
   return (
-    <header className="bg-[#F4F1EA] border-b border-[color:var(--color-hairline)]">
-      <div className="max-w-[1240px] mx-auto px-8 lg:px-14 py-6 flex items-center justify-between gap-8">
-        <Link href="/" className="flex flex-col leading-tight">
-          <span className="text-[12px] font-semibold tracking-[0.18em] text-[#0A2540]">
-            THE SQUADRON
-          </span>
-          <span className="text-[11px] tracking-[0.06em] font-normal text-[color:var(--color-navy-mute)]">
-            Content Operations
-          </span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-8" aria-label="Views">
+    <header className="sticky top-0 z-30 bg-[color:var(--color-canvas)]/85 supports-[backdrop-filter]:backdrop-blur-md supports-[backdrop-filter]:bg-[color:var(--color-canvas)]/70 border-b border-[color:var(--color-rule)]">
+      <div className="max-w-[1240px] mx-auto px-6 md:px-12 lg:px-16 h-[88px] md:h-[96px] flex items-center justify-between gap-8">
+        <nav
+          className="hidden md:flex items-center gap-10"
+          aria-label="Views"
+        >
           {item("/calendar", "Calendar", "calendar")}
           {item("/list", "List", "list")}
           {item("/types", "Types", "types")}
         </nav>
 
-        <div className="flex items-center gap-6">
-          <SyncButton />
+        {/* Mobile: show "Content Operations" eyebrow on the left when nav is in tab bar */}
+        <div className="md:hidden text-[10px] tracking-[0.18em] uppercase font-medium text-[color:var(--color-ink-45)]">
+          Content OS
+        </div>
+
+        <div className="flex items-center gap-6 md:gap-10">
           <LogoutLink />
+          <Link
+            href="/calendar"
+            aria-label="The Squadron — Content Operations"
+            className="text-[color:var(--color-ink)] hover:opacity-80"
+          >
+            <SquadronLogo size="md" />
+          </Link>
         </div>
       </div>
     </header>

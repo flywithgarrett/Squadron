@@ -1,86 +1,162 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0A2540;
-  --color-navy-soft: rgba(10, 37, 64, 0.7);
-  --color-navy-mute: rgba(10, 37, 64, 0.55);
-  --color-navy-faint: rgba(10, 37, 64, 0.35);
-  --color-cream: #F4F1EA;
-  --color-cream-deep: #EDE9DF;
+  /* Surface */
+  --color-canvas: #F5F1E8;
+  --color-canvas-deep: #EFEADE;
   --color-paper: #FBFAF6;
-  --color-gold: #C8A24B;
-  --color-hairline: rgba(10, 37, 64, 0.08);
-  --color-hairline-strong: rgba(10, 37, 64, 0.14);
+  --color-paper-soft: #FCFAF5;
 
+  /* Ink */
+  --color-ink: #0A2540;
+  --color-ink-80: rgba(10, 37, 64, 0.82);
+  --color-ink-60: rgba(10, 37, 64, 0.62);
+  --color-ink-45: rgba(10, 37, 64, 0.45);
+  --color-ink-30: rgba(10, 37, 64, 0.30);
+
+  /* Hairlines */
+  --color-rule: rgba(10, 37, 64, 0.07);
+  --color-rule-strong: rgba(10, 37, 64, 0.14);
+
+  /* Brand accent — used as 1px hairline only */
+  --color-gold: #C8A24B;
+
+  /* Status accent — used sparingly */
+  --color-warn: #A14829;
+
+  /* Type stack — Inter mimics SF Pro Text/Display via feature settings */
   --font-sans:
     "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
     ui-sans-serif, system-ui, sans-serif;
 
-  --ease-out-apple: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Apple's signature ease-out curve */
+  --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-apple-spring: cubic-bezier(0.16, 1, 0.3, 1);
 
   --radius-sm: 4px;
   --radius-md: 6px;
 }
 
 html {
-  background: var(--color-cream);
+  background: var(--color-canvas);
+  scroll-behavior: smooth;
 }
 
 html,
 body {
-  color: var(--color-navy);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  font-feature-settings: "ss01", "cv11", "cv05";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--color-cream);
+  background: var(--color-canvas);
 }
 
 * {
-  border-color: var(--color-hairline);
+  border-color: var(--color-rule);
 }
 
 ::selection {
-  background: var(--color-gold);
-  color: white;
+  background: var(--color-ink);
+  color: var(--color-canvas);
 }
 
+/* Typography utility classes */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
 .display {
-  letter-spacing: -0.02em;
-  font-feature-settings: "ss01";
+  font-feature-settings: "ss01", "cv11";
+  letter-spacing: -0.025em;
+  font-weight: 500;
 }
 
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Buttons & links — Apple-easing micro-transitions */
 button,
 [role="button"],
 a {
-  transition: color 180ms var(--ease-out-apple),
-    background-color 180ms var(--ease-out-apple),
-    border-color 180ms var(--ease-out-apple),
-    opacity 180ms var(--ease-out-apple);
+  transition:
+    color 200ms var(--ease-apple),
+    background-color 200ms var(--ease-apple),
+    border-color 200ms var(--ease-apple),
+    opacity 200ms var(--ease-apple),
+    transform 200ms var(--ease-apple);
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--color-navy-faint);
+  color: var(--color-ink-30);
 }
 
-/* Hide scrollbar on the body — content has its own ample whitespace */
-body::-webkit-scrollbar {
-  width: 12px;
+/* Custom scrollbar — visible but quiet */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule-strong) transparent;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
   background: transparent;
 }
-body::-webkit-scrollbar-thumb {
-  background: var(--color-hairline-strong);
-  border: 4px solid var(--color-cream);
-  border-radius: 6px;
+*::-webkit-scrollbar-thumb {
+  background: var(--color-rule-strong);
+  border: 3px solid var(--color-canvas);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-30);
+}
+
+/* Page entrance — single subtle fade on first paint, no movement */
+@keyframes paper-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.paper-in {
+  animation: paper-in 480ms var(--ease-apple) both;
+}
+
+/* Detail sheet entrance */
+@keyframes sheet-slide {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.sheet-in {
+  animation: sheet-slide 320ms var(--ease-apple-spring) both;
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.scrim-in {
+  animation: scrim-in 280ms var(--ease-apple) both;
 }

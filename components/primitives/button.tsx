@@ -3,17 +3,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 text-[13px] font-medium tracking-[-0.005em] disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C8A24B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F1EA]",
+  "inline-flex items-center justify-center gap-2 text-[13px] font-medium tracking-[-0.005em] disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-canvas)]",
   {
     variants: {
       variant: {
-        primary: "bg-[#0A2540] text-white hover:bg-[#11305B]",
-        ghost: "text-[#0A2540] hover:bg-[color:var(--color-hairline)]",
-        link: "text-[color:var(--color-navy-soft)] hover:text-[#0A2540] px-0",
+        primary:
+          "bg-[color:var(--color-ink)] text-[color:var(--color-canvas)] hover:bg-[#11305B] active:scale-[0.99]",
+        ghost:
+          "text-[color:var(--color-ink)] hover:bg-[color:var(--color-rule)]",
+        link:
+          "text-[color:var(--color-ink-60)] hover:text-[color:var(--color-ink)] px-0",
       },
       size: {
         sm: "h-8 px-3 rounded-[var(--radius-sm)]",
-        md: "h-10 px-5 rounded-[var(--radius-sm)]",
+        md: "h-11 px-6 rounded-[var(--radius-sm)]",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

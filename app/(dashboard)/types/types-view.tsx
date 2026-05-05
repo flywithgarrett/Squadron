@@ -26,7 +26,7 @@ export function TypesView({ posts }: { posts: Post[] }) {
 
   return (
     <>
-      <div className="space-y-24">
+      <div className="space-y-32">
         {CONTENT_TYPE_NAMES.map((name) => {
           const cfg = CONTENT_TYPES[name];
           const items = grouped.get(name) ?? [];
@@ -34,48 +34,60 @@ export function TypesView({ posts }: { posts: Post[] }) {
           return (
             <section key={name}>
               <div
-                className="pt-7 mb-10"
+                className="pt-8 mb-12 grid grid-cols-12 gap-6 items-end"
                 style={{ borderTop: `1px solid ${cfg.accent}` }}
               >
-                <div className="flex items-baseline justify-between gap-6 flex-wrap">
-                  <div>
-                    <h2
-                      className="text-[24px] font-medium tracking-[-0.015em]"
-                      style={{ color: cfg.accent }}
-                    >
-                      {name}
-                    </h2>
-                    <p className="mt-2 text-[14px] text-[color:var(--color-navy-soft)] max-w-2xl">
-                      {cfg.description}
-                    </p>
+                <div className="col-span-12 md:col-span-7">
+                  <p
+                    className="eyebrow mb-3"
+                    style={{ color: cfg.accent }}
+                  >
+                    Content type
+                  </p>
+                  <h2
+                    className="display text-[28px] md:text-[36px] leading-tight"
+                    style={{ color: cfg.accent }}
+                  >
+                    {name}
+                  </h2>
+                  <p className="mt-3 text-[14px] text-[color:var(--color-ink-60)] max-w-xl">
+                    {cfg.description}
+                  </p>
+                </div>
+                <div className="col-span-12 md:col-span-5 md:text-right">
+                  <div
+                    className="display text-[64px] md:text-[80px] leading-[0.9] tabular text-[color:var(--color-ink)]"
+                  >
+                    {items.length}
                   </div>
-                  <div className="text-right">
-                    <div className="text-[34px] font-medium tabular leading-none text-[#0A2540]">
-                      {items.length}
-                    </div>
-                    <div className="text-[11px] tracking-[0.04em] text-[color:var(--color-navy-mute)] tabular mt-1">
-                      {pct}% of plan
-                    </div>
+                  <div className="mt-2 text-[12px] tracking-[0.06em] uppercase text-[color:var(--color-ink-45)] tabular">
+                    {pct}% of plan
                   </div>
                 </div>
               </div>
 
               {items.length === 0 ? (
-                <p className="text-[14px] text-[color:var(--color-navy-mute)]">
+                <p className="text-[14px] text-[color:var(--color-ink-45)]">
                   No posts assigned to this type.
                 </p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {items.map((p) => (
+                  {items.slice(0, 12).map((p) => (
                     <button
                       key={p.id}
                       type="button"
                       onClick={() => setSelected(p)}
-                      className="text-left"
+                      className="text-left transition-transform duration-200 hover:-translate-y-px"
                     >
                       <PostCard post={p} />
                     </button>
                   ))}
+                  {items.length > 12 && (
+                    <p className="md:col-span-2 text-[12px] tracking-[0.06em] uppercase text-[color:var(--color-ink-45)] mt-2">
+                      Plus {items.length - 12} more in this type — see the list
+                      view for the full set.
+                    </p>
+                  )}
                 </div>
               )}
             </section>

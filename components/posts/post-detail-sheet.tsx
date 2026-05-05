@@ -33,11 +33,11 @@ export function PostDetailSheet({
 
   const Section = ({ label, value }: { label: string; value: string }) =>
     value ? (
-      <section className="pt-7 border-t border-[color:var(--color-hairline)]">
-        <dt className="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-navy-mute)] mb-2">
+      <section className="pt-7 border-t border-[color:var(--color-rule)]">
+        <dt className="eyebrow text-[color:var(--color-ink-45)] mb-2.5">
           {label}
         </dt>
-        <dd className="text-[14px] leading-relaxed text-[#0A2540] whitespace-pre-wrap">
+        <dd className="text-[15px] leading-[1.55] text-[color:var(--color-ink)] whitespace-pre-wrap">
           {value}
         </dd>
       </section>
@@ -49,14 +49,14 @@ export function PostDetailSheet({
         type="button"
         aria-label="Close"
         onClick={onClose}
-        className="absolute inset-0 bg-[#0A2540]/30"
+        className="scrim-in absolute inset-0 bg-[#0A2540]/40 supports-[backdrop-filter]:backdrop-blur-[2px]"
       />
       <aside
-        className="relative w-full max-w-[480px] bg-[#F4F1EA] overflow-y-auto"
+        className="sheet-in relative w-full max-w-[520px] bg-[color:var(--color-canvas)] overflow-y-auto"
         style={{ borderLeft: `3px solid ${accent}` }}
       >
-        <div className="sticky top-0 bg-[#F4F1EA]/95 backdrop-blur supports-[backdrop-filter]:bg-[#F4F1EA]/80 px-8 py-6 flex items-center justify-between border-b border-[color:var(--color-hairline)]">
-          <div className="flex items-center gap-3 text-[11px] tracking-[0.04em] text-[color:var(--color-navy-mute)] tabular">
+        <div className="sticky top-0 z-10 bg-[color:var(--color-canvas)]/85 supports-[backdrop-filter]:backdrop-blur-md supports-[backdrop-filter]:bg-[color:var(--color-canvas)]/72 px-9 py-6 flex items-center justify-between border-b border-[color:var(--color-rule)]">
+          <div className="flex items-center gap-3 text-[12px] tracking-[0.04em] text-[color:var(--color-ink-60)] tabular">
             <time>{formatLongDate(post.date)}</time>
             <span aria-hidden>·</span>
             <span>{post.time}</span>
@@ -64,28 +64,31 @@ export function PostDetailSheet({
           <button
             type="button"
             onClick={onClose}
-            className="text-[color:var(--color-navy-mute)] hover:text-[#0A2540]"
+            className="text-[color:var(--color-ink-45)] hover:text-[color:var(--color-ink)] -mr-1.5 w-8 h-8 inline-flex items-center justify-center rounded-[var(--radius-sm)] hover:bg-[color:var(--color-rule)]"
             aria-label="Close panel"
           >
             <X size={16} strokeWidth={1.5} />
           </button>
         </div>
 
-        <div className="px-8 py-10">
-          <div className="flex items-center gap-2 mb-6 text-[color:var(--color-navy-mute)]">
+        <div className="px-9 py-12">
+          <div className="flex items-center gap-3 mb-7 text-[color:var(--color-ink-60)]">
             {post.platforms.map((p) => (
-              <span key={p} className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.02em]">
+              <span
+                key={p}
+                className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.04em]"
+              >
                 <PlatformGlyph platform={p} size={14} />
                 {p}
               </span>
             ))}
           </div>
 
-          <h2 className="text-[26px] font-medium leading-[1.2] tracking-[-0.015em] text-[#0A2540] mb-6">
+          <h2 className="display text-[30px] md:text-[34px] leading-[1.15] text-[color:var(--color-ink)] mb-8">
             {post.title}
           </h2>
 
-          <div className="flex flex-wrap items-center gap-2 mb-10">
+          <div className="flex flex-wrap items-center gap-2 mb-12">
             <Badge>{post.contentType}</Badge>
             <Badge>Week {post.week}</Badge>
             <Badge>{post.phase}</Badge>

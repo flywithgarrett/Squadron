@@ -12,13 +12,13 @@ export function ContentTypeIndicator({
   return (
     <span
       className={
-        "inline-flex items-center gap-2 text-[11px] tracking-[0.04em] text-[color:var(--color-navy-soft)] " +
+        "inline-flex items-center gap-2.5 text-[11px] tracking-[0.04em] text-[color:var(--color-ink-60)] " +
         (className ?? "")
       }
     >
       <span
         aria-hidden
-        className="inline-block w-[3px] h-3"
+        className="inline-block w-[3px] h-3.5"
         style={{ backgroundColor: cfg.accent }}
       />
       {contentType}

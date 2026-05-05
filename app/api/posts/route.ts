@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { fetchPosts } from "@/lib/notion";
+import { getPosts } from "@/lib/posts";
 
 export async function GET() {
-  const data = await fetchPosts();
-  return NextResponse.json(data);
+  return NextResponse.json({ posts: getPosts() });
 }

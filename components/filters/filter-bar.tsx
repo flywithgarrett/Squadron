@@ -32,19 +32,19 @@ export function FilterBar({
     onChange({ ...filters, [key]: value });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-5 items-end pb-6 border-b border-[color:var(--color-hairline)]">
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-6 items-end pb-8 border-b border-[color:var(--color-rule)]">
       <label className="md:col-span-4 relative block">
         <Search
           size={14}
           strokeWidth={1.5}
-          className="absolute left-0 top-1/2 -translate-y-1/2 text-[color:var(--color-navy-mute)]"
+          className="absolute left-0 top-1/2 -translate-y-1/2 text-[color:var(--color-ink-45)]"
           aria-hidden
         />
         <Input
           placeholder="Search title or hook"
           value={filters.q}
           onChange={(e) => set("q", e.target.value)}
-          className="pl-6"
+          className="pl-7"
         />
       </label>
 
@@ -54,7 +54,7 @@ export function FilterBar({
         onChange={(e) => set("platform", e.target.value)}
         aria-label="Platform"
       >
-        <option value="">Platform — All</option>
+        <option value="">All platforms</option>
         {PLATFORMS.map((p) => (
           <option key={p} value={p}>
             {p}
@@ -68,7 +68,7 @@ export function FilterBar({
         onChange={(e) => set("contentType", e.target.value)}
         aria-label="Content type"
       >
-        <option value="">Type — All</option>
+        <option value="">All types</option>
         {CONTENT_TYPE_NAMES.map((t) => (
           <option key={t} value={t}>
             {t}
@@ -82,7 +82,7 @@ export function FilterBar({
         onChange={(e) => set("phase", e.target.value)}
         aria-label="Phase"
       >
-        <option value="">Phase — All</option>
+        <option value="">All phases</option>
         {PHASES.map((p) => (
           <option key={p} value={p}>
             {p}
@@ -96,7 +96,7 @@ export function FilterBar({
         onChange={(e) => set("status", e.target.value)}
         aria-label="Status"
       >
-        <option value="">Status — All</option>
+        <option value="">All statuses</option>
         {STATUSES.map((s) => (
           <option key={s} value={s}>
             {s}

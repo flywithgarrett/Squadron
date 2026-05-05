@@ -19,7 +19,7 @@ export function LogoutLink() {
         })
       }
       disabled={pending}
-      className="text-[12px] tracking-[0.04em] text-[color:var(--color-navy-mute)] hover:text-[#0A2540] disabled:opacity-40"
+      className="text-[11px] tracking-[0.06em] uppercase font-medium text-[color:var(--color-ink-45)] hover:text-[color:var(--color-ink)] disabled:opacity-40"
     >
       Sign out
     </button>
