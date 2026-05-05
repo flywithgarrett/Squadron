@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Squadron / Content OS",
-  description: "90-day content calendar for The Squadron NYC.",
+  title: "The Squadron / Content Operations",
+  description: "90-day content operations dashboard for The Squadron NYC.",
 };
 
 export default function RootLayout({

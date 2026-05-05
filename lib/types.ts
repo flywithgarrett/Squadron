@@ -1,20 +1,32 @@
-export type Platform = "LinkedIn" | "Instagram" | "TikTok" | "YouTube";
+export type Platform =
+  | "Instagram Reel"
+  | "Instagram Trial Reel"
+  | "Instagram Story"
+  | "TikTok"
+  | "YouTube Short"
+  | "LinkedIn";
 
-export type Pillar =
-  | "1 — Cockpit Cinema"
-  | "2 — Mission Debrief"
-  | "3 — Client Voice"
-  | "4 — Methodology"
-  | "5 — Booking the Mission";
+export type ContentType =
+  | "Cockpit Cinema"
+  | "Instructor & BTS"
+  | "Client Reactions"
+  | "Hook-Driven Discovery"
+  | "B2B Credibility";
 
 export type Phase =
-  | "Phase 1 — Foundation"
-  | "Phase 2 — Proof"
-  | "Phase 3 — Convert";
+  | "Phase 1 — Lock the Engine"
+  | "Phase 2 — Push the Winners"
+  | "Phase 3 — Scale What Works";
+
+export type Audience =
+  | "Aviation Enthusiasts"
+  | "Gift Buyers"
+  | "NYC Experience Seekers"
+  | "Corporate Decision Makers";
 
 export type Status =
   | "Planned"
-  | "Shot"
+  | "Captured"
   | "Edited"
   | "Scheduled"
   | "Posted"
@@ -27,34 +39,51 @@ export interface Post {
   time: string;
   week: number;
   phase: Phase;
-  platform: Platform;
+  platforms: Platform[];
   format: string;
-  pillar: Pillar;
-  audience: string;
+  contentType: ContentType;
+  audience: Audience;
   hook: string;
   cta: string;
-  sourceNotes: string;
+  assetSource: string;
   productionNotes: string;
   status: Status;
   performanceNotes: string;
 }
 
 export const PLATFORMS: Platform[] = [
-  "LinkedIn",
-  "Instagram",
+  "Instagram Reel",
+  "Instagram Trial Reel",
+  "Instagram Story",
   "TikTok",
-  "YouTube",
+  "YouTube Short",
+  "LinkedIn",
+];
+
+export const CONTENT_TYPE_NAMES: ContentType[] = [
+  "Cockpit Cinema",
+  "Instructor & BTS",
+  "Client Reactions",
+  "Hook-Driven Discovery",
+  "B2B Credibility",
 ];
 
 export const PHASES: Phase[] = [
-  "Phase 1 — Foundation",
-  "Phase 2 — Proof",
-  "Phase 3 — Convert",
+  "Phase 1 — Lock the Engine",
+  "Phase 2 — Push the Winners",
+  "Phase 3 — Scale What Works",
+];
+
+export const AUDIENCES: Audience[] = [
+  "Aviation Enthusiasts",
+  "Gift Buyers",
+  "NYC Experience Seekers",
+  "Corporate Decision Makers",
 ];
 
 export const STATUSES: Status[] = [
   "Planned",
-  "Shot",
+  "Captured",
   "Edited",
   "Scheduled",
   "Posted",

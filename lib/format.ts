@@ -1,11 +1,11 @@
 const DAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
 const MONTH_LONG = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
+];
+const MONTH_SHORT = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
 export function parseDate(iso: string): Date {
@@ -13,13 +13,18 @@ export function parseDate(iso: string): Date {
   return new Date(Date.UTC(y, m - 1, d));
 }
 
-export function formatDayDate(iso: string): string {
-  const dt = parseDate(iso);
-  return `${DAY[dt.getUTCDay()]}, ${MONTH[dt.getUTCMonth()]} ${dt.getUTCDate()}`;
+export function toIso(d: Date): string {
+  return d.toISOString().slice(0, 10);
 }
 
-export function formatDayShort(iso: string): string {
-  return DAY[parseDate(iso).getUTCDay()];
+export function formatDayDate(iso: string): string {
+  const dt = parseDate(iso);
+  return `${DAY[dt.getUTCDay()]}, ${MONTH_SHORT[dt.getUTCMonth()]} ${dt.getUTCDate()}`;
+}
+
+export function formatLongDate(iso: string): string {
+  const dt = parseDate(iso);
+  return `${DAY[dt.getUTCDay()]}, ${MONTH_LONG[dt.getUTCMonth()]} ${dt.getUTCDate()}`;
 }
 
 export function formatMonthYear(year: number, monthIndex: number): string {
@@ -41,10 +46,30 @@ export function getMonthMatrix(
     for (let d = 0; d < 7; d++) {
       const cur = new Date(start);
       cur.setUTCDate(start.getUTCDate() + w * 7 + d);
-      const iso = cur.toISOString().slice(0, 10);
+      const iso = toIso(cur);
       row.push({ date: iso, inMonth: cur.getUTCMonth() === monthIndex });
     }
     weeks.push(row);
   }
   return weeks;
+}
+
+export function uniqueMonths(
+  posts: Array<{ date: string }>,
+): Array<{ key: string; year: number; monthIndex: number }> {
+  const seen = new Set<string>();
+  const out: Array<{ key: string; year: number; monthIndex: number }> = [];
+  for (const p of posts) {
+    const dt = parseDate(p.date);
+    const key = `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, "0")}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push({
+        key,
+        year: dt.getUTCFullYear(),
+        monthIndex: dt.getUTCMonth(),
+      });
+    }
+  }
+  return out.sort((a, b) => a.key.localeCompare(b.key));
 }
