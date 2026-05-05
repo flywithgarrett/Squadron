@@ -1,106 +1,154 @@
 # Squadron Content OS
 
-A read-only content calendar dashboard for The Squadron NYC. Renders the 90-day editorial plan as a polished, Squadron-branded interface — calendar grid, filterable list, and pillar-grouped views — for the leadership team.
+A read-only content operations dashboard for The Squadron NYC. Reads the 90-day editorial plan from a Notion database and renders it as three views — calendar grid, filterable list, and content-type breakdown — under single-password access. The Content Lead and leadership edit posts inside Notion directly. The web app reads, never writes; multi-user access is enforced at the Notion permission level.
 
 ## Stack
 
-- Next.js 15 (App Router) + TypeScript
-- Tailwind CSS v4
-- shadcn-style UI primitives (zero Radix dependency, kept lean for read-only)
-- `lucide-react` for icons
+- Next.js 15 (App Router) + TypeScript, RSC by default
+- Tailwind CSS v4 with a custom design system (no shadcn)
+- `@notionhq/client` with `unstable_cache` (5-min revalidation, tag-based invalidation)
+- `lucide-react` for utility icons; custom SVG glyphs for platforms
 - Single-password cookie auth via middleware
-- Posts live in `data/posts.json` — the source of truth, bundled with each deploy
+- Vercel deployment
 
-## Local dev
+## Design notes
+
+The interface is built to a deliberate bar — Apple Music / iOS Health / Linear, not Notion or Vercel marketing. Hairline borders only (`rgba(10, 37, 64, 0.08)`), tabular numerals, 200ms `cubic-bezier(0.32, 0.72, 0, 1)` easing, no gradients, no emoji, no shadows beyond the most subtle elevation. Content-type accents render as 3px left borders on cards, never as fills. The 1px gold underline on active nav items is the only color flourish.
+
+## 1 — Notion setup
+
+### 1a. Create the integration
+
+1. Visit https://www.notion.so/my-integrations
+2. **New integration** → name "Squadron Content OS", choose workspace
+3. Copy the **Internal Integration Token** — this is your `NOTION_TOKEN`
+
+### 1b. Create the database
+
+Create a full-page database in Notion with the properties below. Names and select-option values must match exactly (em-dashes included):
+
+| Property            | Type         | Options / Notes                                                                                                                |
+| ------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Title               | Title        | Working title of the post                                                                                                      |
+| Date                | Date         | Scheduled post date                                                                                                            |
+| Time                | Rich text    | e.g., "7:30 AM"                                                                                                                |
+| Week                | Number       | 1–13                                                                                                                           |
+| Phase               | Select       | `Phase 1 — Lock the Engine`, `Phase 2 — Push the Winners`, `Phase 3 — Scale What Works`                                        |
+| Platform            | Multi-select | `Instagram Reel`, `Instagram Trial Reel`, `Instagram Story`, `TikTok`, `YouTube Short`, `LinkedIn`                             |
+| Format              | Rich text    | Free-form (e.g., "Reel (30s)", "Document Carousel")                                                                            |
+| Content Type        | Select       | `Cockpit Cinema`, `Instructor & BTS`, `Client Reactions`, `Hook-Driven Discovery`, `B2B Credibility`                           |
+| Audience            | Select       | `Aviation Enthusiasts`, `Gift Buyers`, `NYC Experience Seekers`, `Corporate Decision Makers`                                   |
+| Hook                | Rich text    | First two lines / on-screen text                                                                                               |
+| CTA                 | Rich text    | Call to action                                                                                                                 |
+| Asset Source        | Rich text    | Where footage comes from                                                                                                       |
+| Production Notes    | Rich text    | Editing notes                                                                                                                  |
+| Status              | Select       | `Planned`, `Captured`, `Edited`, `Scheduled`, `Posted`, `Killed`                                                               |
+| Performance Notes   | Rich text    | Post-publish metrics                                                                                                           |
+
+### 1c. Connect the integration
+
+Open the database → `…` menu → **Connections** → search "Squadron Content OS" → **Confirm**. Without this step the API will 404.
+
+### 1d. Copy the database ID
+
+The URL looks like `https://www.notion.so/<workspace>/<DATABASE_ID>?v=...`. The 32-char hex segment is your `NOTION_DATABASE_ID`.
+
+## 2 — Local dev
 
 ```bash
 pnpm install
 cp .env.example .env.local
-# set APP_PASSWORD
+# fill in APP_PASSWORD, NOTION_TOKEN, NOTION_DATABASE_ID, SEED_SECRET
 pnpm dev
 ```
 
-Open `http://localhost:3000`. You'll be redirected to `/login`. Enter `APP_PASSWORD`.
+If `NOTION_TOKEN` is unset or the database is empty, the dashboard renders from `data/seed.json` so you can preview the UI before connecting Notion.
 
-## Editing posts
-
-Posts are stored in `data/posts.json`. To change the calendar:
-
-1. Edit `data/posts.json`
-2. Commit and push
-3. Vercel auto-deploys
-
-Each post has these fields (see `lib/types.ts` for the type):
-
-| Field             | Notes                                                        |
-| ----------------- | ------------------------------------------------------------ |
-| date              | ISO `YYYY-MM-DD`                                             |
-| time              | e.g., "7:30 AM"                                              |
-| week              | 1–13                                                         |
-| phase             | `Phase 1 — Foundation` / `Phase 2 — Proof` / `Phase 3 — Convert` |
-| platform          | `LinkedIn` / `Instagram` / `TikTok` / `YouTube`              |
-| format            | e.g., "Document Carousel", "Reel (30s)"                      |
-| pillar            | One of the five pillars (see `lib/pillars.ts`)               |
-| audience          | e.g., "Decision-makers (Tier 1)"                             |
-| title             | Working title                                                |
-| hook              | First two lines / on-screen text                             |
-| cta               | Call to action                                               |
-| sourceNotes       | Asset / archive notes                                        |
-| productionNotes   | Editing notes                                                |
-| status            | `Planned` / `Shot` / `Edited` / `Scheduled` / `Posted` / `Killed` |
-| performanceNotes  | Post-publish metrics                                         |
-
-## Deploy to Vercel
+## 3 — Deploy to Vercel
 
 1. Push this repo to GitHub
-2. Import on Vercel → defaults are fine (Next.js detected)
-3. **Environment Variables**: add `APP_PASSWORD`
+2. Import on Vercel — Next.js detected, defaults are fine
+3. **Environment Variables**: set `APP_PASSWORD`, `NOTION_TOKEN`, `NOTION_DATABASE_ID`, `SEED_SECRET`
 4. Deploy
 
-## Roles
+## 4 — One-time seed import
 
-There is no per-user auth in the app. Everyone with the dashboard URL uses the same `APP_PASSWORD`. The dashboard is read-only by design.
+After deploying with the four env vars set, hit this URL in a browser to populate Notion from `data/seed.json`:
 
-## Roadmap (v2)
+```
+https://YOUR-DOMAIN/api/seed?secret=YOUR_SEED_SECRET
+```
 
-- Inline post editing with a backing database (Postgres / Supabase)
-- Native analytics integrations (IG / LinkedIn / TikTok / YouTube)
-- Automated repurposing checklist (TikTok → Reel → Short)
+The route returns `{ ok: true, created, failed }`. It logs detailed errors server-side. Run once — re-running creates duplicates.
+
+After it succeeds, click the **Sync** button in the header to invalidate the cache and pull the live Notion data.
+
+## 5 — Roles (Notion permissions)
+
+There is no per-user auth in the app. Roles are enforced at the Notion level:
+
+- **Content Lead** — added as **full-access editor** on the Notion database. Edits flow into the dashboard within ~5 minutes (or instantly via Sync).
+- **Squadron leadership** — added as **viewers** (or simply use the dashboard).
+- **Everyone with the dashboard URL** — uses the shared `APP_PASSWORD`. Read-only by design.
+
+## 6 — Regenerating seed data
+
+```bash
+pnpm seed:gen
+```
+
+This rewrites `data/seed.json` deterministically using the cadence and voice rules in `scripts/generate-seed.ts`. Edit the script, regenerate, commit. The script:
+
+- Starts from the first Monday of the plan (`2026-05-11`)
+- 13 weeks, three phases
+- Daily Stories tracked as one weekly recurring entry
+- 2-3 Reels/week (alternating)
+- 3-4 Trial Reels/week (hook tests for non-followers)
+- TikTok ramps 3 → 4 → 5 → 6 per week across the phases
+- Daily YouTube Shorts (Phase 1 = back catalog, Phase 2+ = same-day Reel repurposes)
+- 1 LinkedIn post per week (alternating Tue / Thu morning)
+
+## 7 — Roadmap (v2)
+
+- Inline post editing (no Notion round-trip)
+- Native analytics integrations (IG / TikTok / YouTube / LinkedIn)
+- Automated repurposing checklist (Reel → TikTok → Short)
 - Slack notification when status flips to **Posted**
-- Per-user roles and audit trail
+- Per-user roles and audit trail in app code
 
 ## File map
 
 ```
 app/
-  layout.tsx                Root layout, Inter font, brand chrome
-  page.tsx                  Redirects to /views/calendar
-  globals.css               Tailwind v4 + brand tokens
-  actions.ts                Server actions (logout)
-  login/                    Single-password login
-  api/auth/route.ts         POST password → set httpOnly cookie
-  api/posts/route.ts        GET → JSON posts
-  views/
-    calendar/               Month-grid view (default)
-    list/                   Filterable, sortable table
-    pillars/                Accordion grouped by pillar
+  layout.tsx                    Root layout, Inter font
+  page.tsx                      Redirects to /calendar
+  globals.css                   Tailwind v4 + design tokens
+  actions.ts                    Server actions (logout)
+  login/                        Single-password access
+  api/auth/route.ts             POST password → set httpOnly cookie
+  api/revalidate/route.ts       Cache bust for posts tag
+  api/seed/route.ts             One-time bulk import from seed.json
+  (dashboard)/
+    layout.tsx                  Dashboard chrome + mobile tab bar
+    calendar/                   Month-grid view (default)
+    list/                       Sticky-grouped agenda with filters
+    types/                      Strategic mix by content type
 components/
-  header.tsx                Squadron-branded top nav
-  post-card.tsx             Reusable card with pillar accent stripe
-  filter-bar.tsx            Multi-select platform / pillar / phase / status
-  pillar-badge.tsx          Color-coded pillar pill
-  platform-icon.tsx         IG / LI / TT / YT icons
-  post-detail-panel.tsx     Side-panel with full post brief
-  logout-button.tsx
-  ui/                       card, badge, button, input, select, tabs
+  shell/                        Header, sync button, sign out, mobile nav
+  primitives/                   Custom card, badge, button, input, select
+  posts/                        post-card, post-detail-sheet, content-type-indicator
+  filters/                      filter-bar
+  icons/                        Custom SVG platform glyphs
 lib/
-  posts.ts                  Reads data/posts.json
-  types.ts                  Post, Pillar, Platform, Phase, Status
-  pillars.ts                Pillar config (color, bg, description)
-  format.ts                 Date helpers ("Tue, May 12")
-  auth.ts                   Cookie + password helpers
-  utils.ts                  cn()
-middleware.ts               Cookie gate on every route except /login + /api/auth
+  notion.ts                     Notion client + cached fetch + seed import
+  types.ts                      Post + enum types
+  content-types.ts              Five content types + accent colors
+  format.ts                     Date formatters (tabular)
+  auth.ts                       Cookie + password helpers
+  utils.ts                      cn()
+middleware.ts                   Cookie gate (allows /login, /api/auth, /api/seed)
 data/
-  posts.json                The 55-post 90-day plan — edit to change the calendar
+  seed.json                     Generated 90-day plan (~247 posts)
+scripts/
+  generate-seed.ts              Deterministic seed generator
 ```
