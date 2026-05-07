@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const ITEMS: Array<{ href: string; label: string }> = [
   { href: "/calendar", label: "Calendar" },
+  { href: "/brainstorm", label: "Brainstorm" },
   { href: "/list", label: "List" },
   { href: "/types", label: "Types" },
 ];
@@ -16,7 +17,7 @@ export function MobileTabBar() {
       aria-label="Views"
       className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[color:var(--color-canvas)]/90 supports-[backdrop-filter]:backdrop-blur-xl supports-[backdrop-filter]:bg-[color:var(--color-canvas)]/72 border-t border-[color:var(--color-rule)]"
     >
-      <div className="max-w-[480px] mx-auto grid grid-cols-3">
+      <div className="max-w-[560px] mx-auto grid grid-cols-4">
         {ITEMS.map(({ href, label }) => {
           const active = pathname === href || pathname.startsWith(href + "/");
           return (

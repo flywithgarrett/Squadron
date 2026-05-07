@@ -1,9 +1,13 @@
 import { Header } from "@/components/shell/header";
 import { CalendarView } from "./calendar-view";
 import { getPosts } from "@/lib/posts";
+import { isStorageReady } from "@/lib/storage";
 
-export default function CalendarPage() {
-  const posts = getPosts();
+export const dynamic = "force-dynamic";
+
+export default async function CalendarPage() {
+  const posts = await getPosts();
+  const storageReady = isStorageReady();
   return (
     <>
       <Header active="calendar" />
@@ -17,10 +21,10 @@ export default function CalendarPage() {
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-[color:var(--color-ink-60)]">
             The full content schedule, organized by day. Tap any post to read
-            its brief.
+            its brief and update its status.
           </p>
         </header>
-        <CalendarView posts={posts} />
+        <CalendarView posts={posts} storageReady={storageReady} />
       </main>
     </>
   );

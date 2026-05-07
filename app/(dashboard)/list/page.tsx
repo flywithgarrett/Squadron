@@ -1,9 +1,13 @@
 import { Header } from "@/components/shell/header";
 import { ListView } from "./list-view";
 import { getPosts } from "@/lib/posts";
+import { isStorageReady } from "@/lib/storage";
 
-export default function ListPage() {
-  const posts = getPosts();
+export const dynamic = "force-dynamic";
+
+export default async function ListPage() {
+  const posts = await getPosts();
+  const storageReady = isStorageReady();
   return (
     <>
       <Header active="list" />
@@ -16,11 +20,11 @@ export default function ListPage() {
             List
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-[color:var(--color-ink-60)]">
-            Filter by platform, content type, phase, or status. Sticky date
-            headers keep your place as you scroll.
+            Filter by progress group, platform, or content type. Click any
+            row to read the brief and update its status.
           </p>
         </header>
-        <ListView posts={posts} />
+        <ListView posts={posts} storageReady={storageReady} />
       </main>
     </>
   );

@@ -26,7 +26,7 @@ export type Audience =
 
 export type Status =
   | "Planned"
-  | "Captured"
+  | "In Progress"
   | "Edited"
   | "Scheduled"
   | "Posted"
@@ -49,7 +49,22 @@ export interface Post {
   productionNotes: string;
   status: Status;
   performanceNotes: string;
+  promoted?: boolean;
 }
+
+export interface Idea {
+  id: string;
+  text: string;
+  contentType?: ContentType;
+  platforms: Platform[];
+  source: "manual" | "ai-generated";
+  createdAt: string;
+  status: "idea" | "promoted" | "discarded";
+  generatedScript?: string;
+  promotedPostId?: string;
+}
+
+export type ProgressGroup = "all" | "in-progress" | "complete" | "killed";
 
 export const PLATFORMS: Platform[] = [
   "Instagram Reel",
@@ -83,9 +98,17 @@ export const AUDIENCES: Audience[] = [
 
 export const STATUSES: Status[] = [
   "Planned",
-  "Captured",
+  "In Progress",
   "Edited",
   "Scheduled",
   "Posted",
   "Killed",
+];
+
+export const ACTIVE_STATUSES: Status[] = [
+  "Planned",
+  "In Progress",
+  "Edited",
+  "Scheduled",
+  "Posted",
 ];

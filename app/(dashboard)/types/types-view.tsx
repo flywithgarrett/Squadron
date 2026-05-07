@@ -1,13 +1,27 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CONTENT_TYPES } from "@/lib/content-types";
-import { CONTENT_TYPE_NAMES, type ContentType, type Post } from "@/lib/types";
+import { CONTENT_TYPE_NAMES, type ContentType, type Post, type Status } from "@/lib/types";
 import { PostCard } from "@/components/posts/post-card";
 import { PostDetailSheet } from "@/components/posts/post-detail-sheet";
+import { CompletionBar } from "@/components/posts/progress-bar";
 
-export function TypesView({ posts }: { posts: Post[] }) {
-  const [selected, setSelected] = useState<Post | null>(null);
+interface Props {
+  posts: Post[];
+  storageReady: boolean;
+}
+
+export function TypesView({ posts: initialPosts, storageReady }: Props) {
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => setPosts(initialPosts), [initialPosts]);
+
+  const selected = useMemo(
+    () => posts.find((p) => p.id === selectedId) ?? null,
+    [posts, selectedId],
+  );
 
   const grouped = useMemo(() => {
     const map = new Map<ContentType, Post[]>();
@@ -24,24 +38,29 @@ export function TypesView({ posts }: { posts: Post[] }) {
 
   const total = posts.length;
 
+  function applyStatus(id: string, status: Status) {
+    setPosts((cur) =>
+      cur.map((p) => (p.id === id ? { ...p, status } : p)),
+    );
+  }
+
   return (
     <>
       <div className="space-y-32">
         {CONTENT_TYPE_NAMES.map((name) => {
           const cfg = CONTENT_TYPES[name];
           const items = grouped.get(name) ?? [];
+          const active = items.filter((p) => p.status !== "Killed");
+          const posted = active.filter((p) => p.status === "Posted").length;
           const pct = total ? Math.round((items.length / total) * 100) : 0;
           return (
             <section key={name}>
               <div
-                className="pt-8 mb-12 grid grid-cols-12 gap-6 items-end"
+                className="pt-8 mb-10 grid grid-cols-12 gap-6 items-end"
                 style={{ borderTop: `1px solid ${cfg.accent}` }}
               >
                 <div className="col-span-12 md:col-span-7">
-                  <p
-                    className="eyebrow mb-3"
-                    style={{ color: cfg.accent }}
-                  >
+                  <p className="eyebrow mb-3" style={{ color: cfg.accent }}>
                     Content type
                   </p>
                   <h2
@@ -55,9 +74,7 @@ export function TypesView({ posts }: { posts: Post[] }) {
                   </p>
                 </div>
                 <div className="col-span-12 md:col-span-5 md:text-right">
-                  <div
-                    className="display text-[64px] md:text-[80px] leading-[0.9] tabular text-[color:var(--color-ink)]"
-                  >
+                  <div className="display text-[64px] md:text-[80px] leading-[0.9] tabular text-[color:var(--color-ink)]">
                     {items.length}
                   </div>
                   <div className="mt-2 text-[12px] tracking-[0.06em] uppercase text-[color:var(--color-ink-45)] tabular">
@@ -65,6 +82,12 @@ export function TypesView({ posts }: { posts: Post[] }) {
                   </div>
                 </div>
               </div>
+
+              <CompletionBar
+                total={active.length}
+                posted={posted}
+                className="mb-12"
+              />
 
               {items.length === 0 ? (
                 <p className="text-[14px] text-[color:var(--color-ink-45)]">
@@ -76,7 +99,7 @@ export function TypesView({ posts }: { posts: Post[] }) {
                     <button
                       key={p.id}
                       type="button"
-                      onClick={() => setSelected(p)}
+                      onClick={() => setSelectedId(p.id)}
                       className="text-left transition-transform duration-200 hover:-translate-y-px"
                     >
                       <PostCard post={p} />
@@ -84,8 +107,8 @@ export function TypesView({ posts }: { posts: Post[] }) {
                   ))}
                   {items.length > 12 && (
                     <p className="md:col-span-2 text-[12px] tracking-[0.06em] uppercase text-[color:var(--color-ink-45)] mt-2">
-                      Plus {items.length - 12} more in this type — see the list
-                      view for the full set.
+                      Plus {items.length - 12} more in this type — see the
+                      list view for the full set.
                     </p>
                   )}
                 </div>
@@ -95,7 +118,12 @@ export function TypesView({ posts }: { posts: Post[] }) {
         })}
       </div>
 
-      <PostDetailSheet post={selected} onClose={() => setSelected(null)} />
+      <PostDetailSheet
+        post={selected}
+        storageReady={storageReady}
+        onStatusChange={applyStatus}
+        onClose={() => setSelectedId(null)}
+      />
     </>
   );
 }

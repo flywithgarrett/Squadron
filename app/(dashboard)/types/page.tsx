@@ -1,9 +1,13 @@
 import { Header } from "@/components/shell/header";
 import { TypesView } from "./types-view";
 import { getPosts } from "@/lib/posts";
+import { isStorageReady } from "@/lib/storage";
 
-export default function TypesPage() {
-  const posts = getPosts();
+export const dynamic = "force-dynamic";
+
+export default async function TypesPage() {
+  const posts = await getPosts();
+  const storageReady = isStorageReady();
   return (
     <>
       <Header active="types" />
@@ -16,11 +20,11 @@ export default function TypesPage() {
             Types
           </h1>
           <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-[color:var(--color-ink-60)]">
-            How the plan distributes across the five content types. The shape
-            of the mix is the strategy.
+            How the plan distributes across the five content types and how
+            much of each is already in the world.
           </p>
         </header>
-        <TypesView posts={posts} />
+        <TypesView posts={posts} storageReady={storageReady} />
       </main>
     </>
   );
